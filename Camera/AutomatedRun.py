@@ -29,7 +29,7 @@ upper_blue = np.array([140, 255, 255])
 
 # Define tracking zones
 left_zone = [CENTER_X - 250, CENTER_X - 100]
-right_zone = [CENTER_X + 100, CENTER_X + 250]
+right_zone = [CENTER_X -70, CENTER_X + 70]
 correction_angle = 10  # Angle adjustment
 
 # Video Writer (Save Video)
@@ -87,7 +87,7 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR3\n')
+                    ser_pico.write(b'STR2\n')
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
         
@@ -96,11 +96,17 @@ try:
         
         distance=sensor.distance * 100
         print("Distance to the bucket: ", distance)
-        if distance<100 and distance!=400:
+        if distance<150:
             print("Pi 5: Turning Right 315 degrees")
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'TL50\n')
-            ser_pico.write(b'TR315\n')
+            ser_pico.write(b'STR-25\n') #stop
+            time.sleep(0.65)
+            ser_pico.write(b'T13150\n') #turn left
+            ser_pico.write(b'STR-25\n') #stop
+            time.sleep(0.85)
+            ser_pico.write(b'T61170\n')#turn right
+            ser_pico.write(b'STR2\n') #stop
+            time.sleep(5)
             continue_run=False
 
         '''# Display the frame
