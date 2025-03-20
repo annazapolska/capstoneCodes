@@ -50,11 +50,11 @@ try:
         captured_frames.append(frame_bgr)
         out.write(frame_bgr)  # Write frame to video
 
-        '''
+        
         # Display the frames
         cv2.imshow("Camera", frame_bgr)  # Show corrected BGR frame
         cv2.imshow("Blue Detection", mask)  # Show blue mask
-        '''
+        
         frames_processed += 1
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
