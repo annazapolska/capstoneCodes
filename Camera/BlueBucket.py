@@ -37,10 +37,10 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Codec for .avi file
 video_writer = cv2.VideoWriter('output.avi', fourcc, 20.0, (FRAME_WIDTH, FRAME_HEIGHT))
 
 print("Pi 5: Started Blue Object Detection (State B1)")
-continue_run=True #stops the code when state 1 is done
+B1=True #stops the code when state 1 is done
 
 try:
-    while continue_run==True:        
+    while B1==True:        
         # Capture frame from PiCamera2
         frame = picam2.capture_array()
         frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -107,14 +107,8 @@ try:
             ser_pico.write(b'T61170\n')#turn right
             ser_pico.write(b'STR2\n') #stop
             time.sleep(5)
-            continue_run=False
+            B1=False
 
-        '''# Display the frame
-        cv2.imshow("Blue Object Tracking", frame_bgr)
-
-        # Exit with 'q' key
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break'''  
 
 finally:
     print("Pi 5: Stopping Detection")
