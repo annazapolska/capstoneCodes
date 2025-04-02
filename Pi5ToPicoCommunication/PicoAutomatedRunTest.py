@@ -22,14 +22,10 @@ def send_command(command):
 print("Testing commands on Pico")
 
 # Test commands
-send_command("STR3")  # Move forward at default speed
-time.sleep(2)
-send_command("STOP")    # Stop motors
-time.sleep(5)
-send_command("AR")    # Stop motors
-time.sleep(4)
-send_command("STOP")    # Stop motors
-time.sleep(5)
+send_command("STOP010-50 200")
+#send_command("T16150")
+send_command("STOP000000 2")
+
 
 # Continuous listening (optional)
 while True:
