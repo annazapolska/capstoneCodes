@@ -2,15 +2,11 @@ import cv2
 import time
 from picamera2 import Picamera2
 
-
-FRAME_WIDTH = 1280
-FRAME_HEIGHT = 720
-
 # Initialize the camera
 picam2 = Picamera2()
-config = picam2.create_video_configuration(main={"size": (FRAME_WIDTH, FRAME_HEIGHT)})
+config = picam2.create_video_configuration(main={"size": (2560, 1440)})
 picam2.configure(config)
-picam2.set_controls({"FrameRate": 10})
+picam2.set_controls({"FrameRate": 120})
 picam2.start()
 
 # Define HSV range for blue
@@ -43,23 +39,25 @@ try:
         # Detect contours on the blue mask
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        # Draw rectangular bounding boxes around detected blue objects
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            print(f"{area}")
-            x, y, w, h = cv2.boundingRect(contour)
-            if w * h > 500:  # Ignore small detections (adjust threshold as needed)
-                cv2.rectangle(frame_bgr, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green box
+        if contours:
+            # Find the largest contour
+            largest_contour = max(contours, key=cv2.contourArea)
+            largest_area = cv2.contourArea(largest_contour)
+
+            if largest_area > 500:  # Ignore small detections
+                x, y, w, h = cv2.boundingRect(largest_contour)
+                cv2.rectangle(frame_bgr, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw bounding box
+                
+                print(f"Largest detected blue object area: {largest_area:.2f} px²")
 
         # Store the frame for video saving
         captured_frames.append(frame_bgr)
         out.write(frame_bgr)  # Write frame to video
 
-        
         # Display the frames
         cv2.imshow("Camera", frame_bgr)  # Show corrected BGR frame
         cv2.imshow("Blue Detection", mask)  # Show blue mask
-        
+
         frames_processed += 1
 
         if cv2.waitKey(1) & 0xFF == ord('q'):

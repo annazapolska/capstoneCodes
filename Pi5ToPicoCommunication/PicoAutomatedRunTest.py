@@ -22,7 +22,7 @@ def send_command(command):
 print("Testing commands on Pico")
 
 # Test commands
-send_command("STOP010-50 200")
+send_command("STOP-10-25 225")
 #send_command("T16150")
 send_command("STOP000000 2")
 
