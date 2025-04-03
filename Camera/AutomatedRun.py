@@ -587,7 +587,7 @@ try:
                     ser_pico.write(b'STR2\n')
                     time.sleep(8)
                     ser_pico.flush()
-                    Finish=False
+                    Finish=Falses
                     print("Pi 5: Moving straight")
         
         # Write the frame to video file
