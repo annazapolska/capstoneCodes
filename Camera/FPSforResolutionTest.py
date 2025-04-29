@@ -1,3 +1,5 @@
+#This code is another test for fps rates for specific resolution
+
 import cv2
 import time
 from picamera2 import Picamera2

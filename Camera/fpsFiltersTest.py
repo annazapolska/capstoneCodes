@@ -1,3 +1,6 @@
+#This code is another code to calculate fps rate when detecting blue
+# objects and applying filters (Gaussian blur, erotion, dilation)
+
 import cv2
 import time
 from picamera2 import Picamera2

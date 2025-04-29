@@ -1,3 +1,5 @@
+# This code is the code for just blue buckiet state to test out all 
+# of the functions for the bucket stat
 import cv2
 import time
 import serial

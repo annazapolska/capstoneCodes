@@ -1,3 +1,6 @@
+#This file is the automated run file which runs automatically on the computer.
+# It contains all of the states on the course and uses while loops for each state
+
 import cv2
 import time
 import serial
@@ -48,7 +51,7 @@ B1=True #stops the code when state 1 is done
 
 try:
     #BLUE BUCKET 1
-    '''while B1==True: 
+    while B1==True: 
         print("Detecting Blue Bucket 1")
         # Capture frame from PiCamera2
         frame = picam2.capture_array()
@@ -268,11 +271,6 @@ try:
     #GOING OVER THE RAMP
     Ramp=True
     while Ramp==True: 
-        print("Going over the Ramp")
-        ser_pico.write(b'STR5\n')
-        time.sleep(5)
-        Ramp=False
-        ser_pico.flush()
         # Capture frame from PiCamera2
         frame = picam2.capture_array()
         frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -398,7 +396,7 @@ try:
         else:
             ser_pico.reset_input_buffer()
             print("Don't see the object, stopping")
-            ser_pico.write(b'STOP-05-05 001\n')'''
+            ser_pico.write(b'STOP-05-05 001\n')
         # Write the frame to video file
         #video_writer.write(frame_bgr)
         
@@ -492,7 +490,7 @@ try:
 
     
     #BLUE BUCKET 4 - FINAL BUCKET
-    '''B4=True
+    B4=True
     while B4==True: 
         print("Detecting Blue Bucket 3")
         # Capture frame from PiCamera2

@@ -1,3 +1,5 @@
+#This is a simple test for ultrasonic sensor
+
 from gpiozero import DistanceSensor
 from time import sleep
 

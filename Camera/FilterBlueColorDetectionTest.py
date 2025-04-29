@@ -1,3 +1,6 @@
+#This code calculates the fps rate oof detection when detecting for 
+# blue objects, and applying Gaussian blur, erotion, and dilation
+
 import cv2
 import time
 from picamera2 import Picamera2

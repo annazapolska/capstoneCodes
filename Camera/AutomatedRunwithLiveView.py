@@ -1,3 +1,5 @@
+#tried to detect blue bucket and show a live  view but getting errors
+
 import cv2
 import time
 import numpy as np

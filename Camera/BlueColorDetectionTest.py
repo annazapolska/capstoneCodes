@@ -1,3 +1,5 @@
+#This code is used to calculate fps rate when just detecting blue bucket
+
 import cv2
 import time
 from picamera2 import Picamera2

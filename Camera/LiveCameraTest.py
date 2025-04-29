@@ -1,4 +1,6 @@
 # https://wiki.seeedstudio.com/reTerminal_DM_opencv/
+# This code shows the life view of detection. SImple code to check 
+# that detection for colors work
 import cv2
 from picamera2 import Picamera2
 picam2 = Picamera2()

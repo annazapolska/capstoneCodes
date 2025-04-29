@@ -1,3 +1,5 @@
+#This code contains the code for Blue Bucket state and Yellow Bucket state
+
 import cv2
 import time
 import serial

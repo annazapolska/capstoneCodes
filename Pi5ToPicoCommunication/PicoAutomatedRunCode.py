@@ -1,3 +1,5 @@
+#This code is the code ran on Pico for the automated run
+
 import sys 
 import time 
 from machine import Pin, PWM 

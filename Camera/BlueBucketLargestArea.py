@@ -1,3 +1,6 @@
+#This code detects blue objects, highlights the biggest blue object 
+# and prints the area in pixels of the largest detecte4d object
+
 import cv2
 import time
 from picamera2 import Picamera2
