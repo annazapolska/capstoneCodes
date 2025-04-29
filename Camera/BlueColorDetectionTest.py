@@ -15,7 +15,9 @@ picam2.start()
 
 # Define HSV range for blue
 lower_blue = (100, 150, 50)
-upper_blue = (140, 255, 255)
+upper_blue = (110, 255, 255)
+lower_yellow = (20, 100, 100) 
+upper_yellow = (30, 255, 255)
 
 # Initialize frame counter and storage
 frames_processed = 0
@@ -27,7 +29,7 @@ fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # More compatible codec
 out = cv2.VideoWriter('captured.mp4', fourcc, 10.0, (2560, 1440))  # Match frame size
 
 try:
-    while frames_processed < 100:
+    while frames_processed < 1000:
         # Capture frame
         frame = picam2.capture_array()
 
@@ -38,7 +40,7 @@ try:
         hsv = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
 
         # Create mask to detect blue color
-        mask = cv2.inRange(hsv, lower_blue, upper_blue)
+        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
         # Detect contours on the blue mask
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)

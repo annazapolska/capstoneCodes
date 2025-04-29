@@ -25,7 +25,7 @@ picam2.start()
 
 # Define Blue Color Range (HSV)
 lower_blue = np.array([100, 150, 50])
-upper_blue = np.array([140, 255, 255])
+upper_blue = np.array([110, 255, 255])
 lower_yellow = np.array([20, 100, 100]) 
 upper_yellow = np.array([30, 255, 255])
 lower_red1 = np.array([0, 120, 70])
@@ -96,24 +96,31 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR2\n')
+                    ser_pico.write(b'STR1\n')
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
-        
-        # Write the frame to video file
-        video_writer.write(frame_bgr)
-        
-        distance=sensor.distance * 100
-        print("Distance to the bucket: ", distance)
-        if distance<180:
-            print("Pi 5: Turning Right 315 degrees")
+                
+                distance=sensor.distance * 100
+                print("Distance to the bucket: ", distance)
+                if distance<160:
+                    print("Pi 5: Turning Right 315 degrees")
+                    ser_pico.reset_input_buffer()
+                    ser_pico.write(b'STOP-25-25 065\n') #stop
+                    ser_pico.write(b'T13130\n') #turn left
+                    ser_pico.write(b'T62250\n') #turn right
+                    ser_pico.write(b'STOP-25-25 065\n')
+                    time.sleep(4)
+                    ser_pico.write(b'STR2\n')
+                    time.sleep(4)
+                    B1=False
+                    continue
+        else:
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'STOP-25-25 065\n') #stop
-            ser_pico.write(b'T13150\n') #turn left
-            ser_pico.write(b'T62140\n') #turn right
-            time.sleep(3)
-            B1=False
-    
+            print("Don't see the object, stopping")
+            ser_pico.write(b'STOP-05-05 001\n')
+        # Write the frame to video file
+        #video_writer.write(frame_bgr)
+        
     #YELLOW BUCKET
     Y1=True
     while Y1==True:
@@ -164,22 +171,23 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR2\n')
+                    ser_pico.write(b'STR1\n') #decreased the speed
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
+                
+                distance=sensor.distance * 100
+                print("Distance to the bucket: ", distance)
+                if distance<140:
+                    print("Pi 5: Turning Left 60 degrees")
+                    ser_pico.write(b'STOP-10-75 190\n')
+                    ser_pico.write(b'T60150\n') #turn right
+                    #ser_pico.write(b'STOP-25-25 085\n')
+                    ser_pico.write(b'T09230\n')#turn left, was 245
+                    time.sleep(5)
+                    Y1=False
         
         # Write the frame to video file
-        video_writer.write(frame_bgr)
-        
-        distance=sensor.distance * 100
-        print("Distance to the bucket: ", distance)
-        if distance<225:
-            print("Pi 5: Turning Left 60 degrees")
-            ser_pico.write(b'STOP-10-75 280\n')
-            ser_pico.write(b'T60150\n') #turn right
-            #ser_pico.write(b'STOP-25-25 085\n')
-            ser_pico.write(b'T09215\n')#turn left
-            Y1=False
+        #video_writer.write(frame_bgr)
     
     #BLUE BUCKET 2 BEFORE RAMP
     B2=True
@@ -231,35 +239,47 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR2\n')
+                    ser_pico.write(b'STR1\n')
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
-        
-        # Write the frame to video file
-        video_writer.write(frame_bgr)
-        
-        distance=sensor.distance * 100
-        print("Distance to the bucket: ", distance)
-        if distance<180:
-            print("Pi 5: Turning Right 90 degrees")
+                
+                distance=sensor.distance * 100
+                print("Distance to the bucket: ", distance)
+                if distance<160:
+                    print("Pi 5: Turning Right 315 degrees")
+                    ser_pico.reset_input_buffer()
+                    ser_pico.write(b'STOP-25-25 065\n') #stop
+                    ser_pico.write(b'T13110\n') #turn left
+                    ser_pico.write(b'T62250\n') #turn right
+                    ser_pico.write(b'STOP-25-25 065\n')
+                    time.sleep(4)
+                    ser_pico.write(b'STR2\n')
+                    time.sleep(2)
+                    B2=False
+                    continue
+        else:
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'STOP-25-25 065\n') #stop
-            ser_pico.write(b'T13150\n') #turn left
-            ser_pico.write(b'T62110\n') #turn right
-            time.sleep(4)
-            B2=False
+            print("Don't see the object, stopping")
+            ser_pico.write(b'STOP-05-05 001\n')
+        # Write the frame to video file
+        #video_writer.write(frame_bgr)
+    
     
     #GOING OVER THE RAMP
     Ramp=True
     while Ramp==True: 
         print("Going over the Ramp")
+        ser_pico.write(b'STR5\n')
+        time.sleep(5)
+        Ramp=False
+        ser_pico.flush()
         # Capture frame from PiCamera2
         frame = picam2.capture_array()
         frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         # Convert frame to HSV
         hsv = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        mask = cv2.inRange(hsv, lower_blue, upper_blue) #detecting for next bluie bucket instead
 
         # Apply preprocessing
         mask = cv2.GaussianBlur(mask, (5, 5), 0)
@@ -300,13 +320,13 @@ try:
                 else:
                     ser_pico.reset_input_buffer()
                     ser_pico.write(b'STR5\n')
-                    time.sleep(8)
+                    time.sleep(4)
                     Ramp=False
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
         
         # Write the frame to video file
-        video_writer.write(frame_bgr)
+        #video_writer.write(frame_bgr)
         
     #BLUE BUCKET 3 AFTER RAMP
     B3=True
@@ -358,24 +378,30 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR2\n')
+                    ser_pico.write(b'STR1\n')
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
-        
-        # Write the frame to video file
-        video_writer.write(frame_bgr)
-        
-        distance=sensor.distance * 100
-        print("Distance to the bucket: ", distance)
-        if distance<180:
-            print("Pi 5: Turning Right 315 degrees")
+                
+                distance=sensor.distance * 100
+                print("Distance to the bucket: ", distance)
+                
+                if distance<160:
+                    print("Pi 5: Turning Right 315 degrees")
+                    ser_pico.reset_input_buffer()
+                    ser_pico.write(b'STOP-25-25 065\n') #stop
+                    ser_pico.write(b'T13140\n') #turn left
+                    ser_pico.write(b'T62250\n') #turn right
+                    ser_pico.write(b'STOP-25-25 065\n')
+                    time.sleep(4)
+                    B3=False
+                    continue
+        else:
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'STOP-25-25 065\n') #stop
-            ser_pico.write(b'T13150\n') #turn left
-            ser_pico.write(b'T62215\n') #turn right
-            ser_pico.write(b'STOP-25-25 065\n')
-            time.sleep(2)
-            B3=False'''
+            print("Don't see the object, stopping")
+            ser_pico.write(b'STOP-05-05 001\n')'''
+        # Write the frame to video file
+        #video_writer.write(frame_bgr)
+        
         
     # ARCH - TWO RED OBJECTS AND GOING IN BETWEEN        
     Arch = True
@@ -412,7 +438,6 @@ try:
             if total_area < AREA_THRESHOLD:
                 print("Red objects too small - stopping")
                 ser_pico.reset_input_buffer()
-                ser_pico.write(b'STOP\n')
                 ser_pico.flush()
                 Arch = False  # Exit the loop
                 continue  # Skip the rest of the loop
@@ -458,12 +483,12 @@ try:
         else:
             print("No red detected - stopping")
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'STOP\n')
+            ser_pico.write(b'STOP-05-05 001\n')
             ser_pico.flush()
             Arch = False  # Exit the loop
 
     # Write the frame to video file
-    video_writer.write(frame_bgr)
+    #video_writer.write(frame_bgr)
 
     
     #BLUE BUCKET 4 - FINAL BUCKET
@@ -516,24 +541,34 @@ try:
                     print("Pi 5: Adjusting left")
                 else:
                     ser_pico.reset_input_buffer()
-                    ser_pico.write(b'STR2\n')
+                    ser_pico.write(b'STR1\n')
                     ser_pico.flush()
                     print("Pi 5: Moving straight")
-        
-        # Write the frame to video file
-        video_writer.write(frame_bgr)
-        
-        distance=sensor.distance * 100
-        print("Distance to the bucket: ", distance)
-        if distance<180:
-            print("Pi 5: Turning Right 315 degrees")
+                
+                
+                distance=sensor.distance * 100
+                print("Distance to the bucket: ", distance)
+                if distance<160:
+                    print("Pi 5: Turning Right 315 degrees")
+                    ser_pico.reset_input_buffer()
+                    ser_pico.write(b'STOP-25-25 065\n') #stop
+                    ser_pico.write(b'T13140\n') #turn left
+                    ser_pico.write(b'T62250\n') #turn right
+                    ser_pico.write(b'STOP-25-25 065\n')
+                    time.sleep(4)
+                    
+                    ser_pico.write(b'STR2\n')
+                    time.sleep(2)
+                    B4=False
+                    continue
+        else:
             ser_pico.reset_input_buffer()
-            ser_pico.write(b'STOP-25-25 065\n') #stop
-            ser_pico.write(b'T13150\n') #turn left
-            ser_pico.write(b'T62215\n') #turn right
-            ser_pico.write(b'STOP-25-25 065\n')
-            time.sleep(2)
-            B4=False
+            print("Don't see the object, stopping")
+            ser_pico.write(b'STOP-05-05 001\n')           
+        # Write the frame to video file
+        #video_writer.write(frame_bgr)
+        
+        
     #FINISH
     Finish=True
     while Finish==True: 
@@ -585,19 +620,20 @@ try:
                 else:
                     ser_pico.reset_input_buffer()
                     ser_pico.write(b'STR2\n')
-                    time.sleep(8)
+                    time.sleep(5)
                     ser_pico.flush()
-                    Finish=Falses
+                    Finish=False
                     print("Pi 5: Moving straight")
         
         # Write the frame to video file
-        video_writer.write(frame_bgr)'''
+        #video_writer.write(frame_bgr)'''
         
     print("Finite State Machine Finished")
 
 finally:
     print("Pi 5: Stopping Detection")
-    ser_pico.write(b'STOP\n')
+    #ser_pico.write(b'STOP-25-25 065\n')
+    ser_pico.write(b'FINISH\n')
     picam2.stop()
     video_writer.release()  # Release video writer
     cv2.destroyAllWindows()
